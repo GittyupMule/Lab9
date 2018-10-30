@@ -186,6 +186,7 @@ public class EmployeeDatabase {
 
         Employee jotaro = new Employee("Jotaro", "Joseph");
         database.add(jotaro);
+        System.out.println("Added Jotaro to the directory.\n");
 
         answer = database.countEmployeesUnder(veronica);
         System.out.println("Veronica has " + Integer.toString(answer) + " employees under her.\n");
