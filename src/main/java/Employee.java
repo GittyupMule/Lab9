@@ -7,15 +7,17 @@ public class Employee {
 
     private String name;
     private String manager;
+    private int numManagers = -1;
+    private int numSubordinates = -1;
 
     /**
      * Constructor for initialization.
-     * @param name
-     * @param manager
+     * @param mName
+     * @param mManager
      */
-    public Employee(final String name, final String manager) {
-        this.name = name;
-        this.manager = manager;
+    public Employee(final String mName, final String mManager) {
+        this.name = mName;
+        this.manager = mManager;
     }
 
     /**
@@ -28,10 +30,10 @@ public class Employee {
 
     /**
      * Setter for name.
-     * @param name
+     * @param mName
      */
-    public void setName(final String name) {
-        this.name = name;
+    public void setName(final String mName) {
+        this.name = mName;
     }
 
     /**
@@ -43,10 +45,26 @@ public class Employee {
     }
 
     /**
-     * Setter for manager.
-     * @param manager
+     * Setter for mManager.
+     * @param mManager
      */
-    public void setManager(final String manager) {
-        this.manager = manager;
+    public void setManager(final String mManager) {
+        this.manager = mManager;
+    }
+
+    void setNumManagers(final int mNumManagers) {
+        this.numManagers = mNumManagers;
+    }
+
+    void setNumSubordinates(final int mNumSubordinates) {
+        this.numSubordinates = mNumSubordinates;
+    }
+
+    int getNumManagers() {
+        return numManagers;
+    }
+
+    int getNumSubordinates() {
+        return numSubordinates;
     }
 }

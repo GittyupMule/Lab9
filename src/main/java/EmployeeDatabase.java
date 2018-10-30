@@ -12,10 +12,26 @@ import java.util.List;
  */
 public class EmployeeDatabase {
 
+    protected class Node {
+
+        private int managers = -1;
+        private int subordinates = -1;
+        private Employee item;
+
+        public Employee getItem() {
+            return item;
+        }
+
+        public Node(Employee e) {
+            item = e;
+        }
+
+    }
+
     /**
      * List of employees.
      */
-    public List<Employee> employees;
+    public List<Node> employees;
 
     /**
      * Constructor which initializes the employees list.
@@ -24,7 +40,7 @@ public class EmployeeDatabase {
      * data structures in Java.
      */
     public EmployeeDatabase() {
-        employees = new ArrayList<Employee>();
+        employees = new ArrayList<Node>();
     }
 
     /**
@@ -36,8 +52,8 @@ public class EmployeeDatabase {
     Employee findManager(final Employee employee) {
         Employee manager = null;
         for (int i = 0; i < employees.size(); i++) {
-            if (employees.get(i).getName() == employee.getManager()) {
-                manager = employees.get(i);
+            if (employees.get(i).getItem().getName() == employee.getManager()) {
+                manager = employees.get(i).getItem();
                 break;
             }
         }
@@ -53,9 +69,20 @@ public class EmployeeDatabase {
      * @return int
      */
     public int countManagersAbove(final Employee employee) {
-        /*
-         * Implement this function
-         */
+        if (employee == null) {
+            return -1;
+        }
+        if (employee.getNumManagers() != -1) {
+            return employee.getNumManagers();
+        }
+        int result = countManagersAbove(findManager(employee)) + 1;
+        for (int i = 0; i < employees.size(); i++) {
+            if (employees.get(i).getItem() == employee) {
+                employees.get(i).managers = result;
+                return result;
+            }
+        }
+        return result;
     }
 
     /**
@@ -67,9 +94,35 @@ public class EmployeeDatabase {
      * @return int
      */
     public int countEmployeesUnder(final Employee employee) {
-        /*
-         * Implement this function
-         */
+        int count = 0;
+        if (employee.getNumSubordinates() != -1) {
+            return employee.getNumSubordinates();
+        }
+        for (Node n : employees) {
+            for (Employee e = n.getItem(); e != null; e = findManager(e)) {
+                if (e.getManager() == employee.getName()) {
+                    count++;
+                    break;
+                }
+            }
+        }
+        return count;
+    }
+
+    public void add(final Employee e) {
+        employees.add(new Node(e));
+        countManagersAbove(e);
+        countEmployeesUnder(e);
+        int originalS = 0;
+        if (findManager(e) != null) {
+            findManager(e).setNumSubordinates(findManager(e).getNumSubordinates() + 1);
+        }
+        for (Employee current = e; findManager(current) != null; current = findManager(current)) {
+            int temp = originalS;
+            originalS = current.getNumSubordinates();
+            findManager(current).setNumSubordinates(findManager(current).getNumSubordinates()
+                    - temp + current.getNumSubordinates());
+        }
     }
 
     /**
@@ -85,23 +138,23 @@ public class EmployeeDatabase {
         EmployeeDatabase database = new EmployeeDatabase();
 
         Employee betty = new Employee("Betty", "Sam");
-        database.employees.add(betty);
+        database.add(betty);
         Employee bob = new Employee("Bob", "Sally");
-        database.employees.add(bob);
+        database.add(bob);
         Employee dilbert = new Employee("Dilbert", "Nathan");
-        database.employees.add(dilbert);
+        database.add(dilbert);
         Employee joseph = new Employee("Joseph", "Sally");
-        database.employees.add(joseph);
+        database.add(joseph);
         Employee nathan = new Employee("Nathan", "Veronica");
-        database.employees.add(nathan);
+        database.add(nathan);
         Employee sally = new Employee("Sally", "Veronica");
-        database.employees.add(sally);
+        database.add(sally);
         Employee sam = new Employee("Sam", "Joseph");
-        database.employees.add(sam);
+        database.add(sam);
         Employee susan = new Employee("Susan", "Bob");
-        database.employees.add(susan);
+        database.add(susan);
         Employee veronica = new Employee("Veronica", "");
-        database.employees.add(veronica);
+        database.add(veronica);
 
         System.out.println("Welcome to the employee database\n\n");
 
@@ -130,5 +183,17 @@ public class EmployeeDatabase {
 
         answer = database.countManagersAbove(betty);
         System.out.println("Betty has " + Integer.toString(answer) + " managers above her.\n");
+
+        Employee jotaro = new Employee("Jotaro", "Joseph");
+        database.add(jotaro);
+
+        answer = database.countEmployeesUnder(veronica);
+        System.out.println("Veronica has " + Integer.toString(answer) + " employees under her.\n");
+
+        answer = database.countEmployeesUnder(jotaro);
+        System.out.println("Jotaro has " + Integer.toString(answer) + " employees under him.\n");
+
+        answer = database.countManagersAbove(jotaro);
+        System.out.println("Jotaro has " + Integer.toString(answer) + " managers above him.\n");
     }
 }

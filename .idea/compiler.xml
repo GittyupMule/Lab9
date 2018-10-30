@@ -2,6 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="IdeaProjects-Lab9_main" target="1.10" />
+      <module name="IdeaProjects-Lab9_test" target="1.10" />
       <module name="Lab9_main" target="1.10" />
       <module name="Lab9_test" target="1.10" />
     </bytecodeTargetLevel>
